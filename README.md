@@ -1,6 +1,12 @@
 # Palavras_Que_Transformam_fullstarck
 Projeto desenvolvido na disciplina de WEB 
 
+![image](https://github.com/irllamartins/Palavras_Que_Transformam_fullstarck/assets/39415559/3b599a18-e747-49e7-b947-f22780336fef)
+
+![image](https://github.com/irllamartins/Palavras_Que_Transformam_fullstarck/assets/39415559/7ace08f3-b57a-470e-97f5-f56176da0e8d)
+
+![image](https://github.com/irllamartins/Palavras_Que_Transformam_fullstarck/assets/39415559/75fef471-e43a-432e-8dc1-571c2e592b81)
+
 ![image](https://github.com/irllamartins/Palavras_Que_Transformam_fullstarck/assets/39415559/331a0614-c2a4-4841-b755-7d12f8f753a2)
 
 ![image](https://github.com/irllamartins/Palavras_Que_Transformam_fullstarck/assets/39415559/e5f0f172-07e6-4965-bfbf-4d25f2db2219)

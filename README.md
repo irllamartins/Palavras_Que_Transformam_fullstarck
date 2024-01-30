@@ -3,10 +3,11 @@
 <img loading="lazy" src="http://img.shields.io/static/v1?label=STATUS&message=EM%20FINALIZADO&style=for-the-badge"/>
 </p>
 Projeto desenvolvido na disciplina de WEB 
+
 ## Tecnologias utilizadas
- - React
- - Typescript
- - MUI
+> - React
+ > - Typescript
+ > - MUI
  
 ## Interfaces
 ![image](https://github.com/irllamartins/Palavras_Que_Transformam_fullstarck/assets/39415559/3b599a18-e747-49e7-b947-f22780336fef)

@@ -1,0 +1,12 @@
+# Ignorar a pasta node_modules
+node_modules/
+
+# Ignorar todos os arquivos .env em qualquer diretório
+**/*.env
+
+# Ignorar arquivos .env específicos em subdiretórios
+palavras_que_transformam/.env
+backend/.env
+
+# Outras regras do seu .gitignore, se necessário
+dist/

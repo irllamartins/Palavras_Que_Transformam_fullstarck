@@ -5,9 +5,14 @@
 Projeto desenvolvido na disciplina de WEB 
 
 ## Tecnologias utilizadas
-> - React
- > - Typescript
- > - MUI
+<p>
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Material--UI-0081CB?style=for-the-badge&logo=material-ui&logoColor=white" />
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+  <img src="https://img.shields.io/badge/Redux-593D88?style=for-the-badge&logo=redux&logoColor=white" />
+  <img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" />
+  <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" />
+</p>
  
 ## Interfaces
 ![image](https://github.com/irllamartins/Palavras_Que_Transformam_fullstarck/assets/39415559/3b599a18-e747-49e7-b947-f22780336fef)

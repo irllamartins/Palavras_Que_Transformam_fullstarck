@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -6,17 +6,16 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { makeStyles } from '@mui/styles';
-import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 import { Theme, Typography } from '@mui/material';
-import { useState } from "react";
-import { dateAndHour } from '../../components/date.and.hour/date';
-import clsx from 'clsx'
-import Text from "../../store/application/model/text"
-import wordCounter from '../../store/application/utils/word.counter';
-import { useSelector } from 'react-redux';
-import User from '../../store/application/model/user';
 
+import { dateAndHour } from '../../components/date.and.hour/date';
+import wordCounter from '../../store/application/utils/word.counter';
+import { useForm } from 'react-hook-form';
+import TextSchema, { textSchema } from '../../store/application/schema/text';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { IActionDialog } from '../../store/duck/texts/types';
+import { User } from '../../store/application/model/user';
+import { Text } from '../../store/application/model/text';
 
 const useStyles = makeStyles((theme: Theme) => ({
   dialog: {
@@ -44,105 +43,98 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface IProps {
   readonly open: boolean
-  readonly text: Text
+  readonly text: Text | null
   readonly user: User | null
 
   handleClose(): void
-  handleDialog(dialog: any): void
-  createTextRequest(text: Text): void
-  updateTextRequest(text: Text): void
+  handleDialog(data: IActionDialog): void
   resetCreate(): void
+  handleFormSubmit(text: TextSchema): void
 }
 
 const FormDialog = (props: IProps) => {
-  const classes = useStyles()
+  const classes = useStyles();
+  const { text, open, user, handleClose, handleFormSubmit } = props;
 
   const {
-    user,
-    text,
-    open,
-    handleClose,
-    createTextRequest,
-    updateTextRequest,
-    resetCreate
-  } = props
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm<TextSchema>({
+    defaultValues: text ?? { user_id: user?.id, number_words: 0 } as Text,
+    resolver: yupResolver(textSchema),
+  });
 
+  useEffect(() => {
+    if (text) reset(text);
+  }, [text, reset]);
 
-  const [textData, setTextData] = useState<Text>(new Text().fromJSON({ ...text?.toJSON(), user_id: user?.id }))
-  const [words, setWords] = useState<number>(0)
-
-  React.useEffect(() => {
-    if (text) {
-      setTextData(new Text().fromJSON({ ...text.toJSON(), user_id: user?.id }))
-      setWords(wordCounter(text.body))
+  useEffect(() => {
+    if (Object.keys(errors).length) {
+      console.log(text)
+      console.error("Erros no formulário:", errors);
     }
-  }, [text])
- 
-  return <Dialog open={open} onClose={handleClose} classes={{ paper: classes.paper }}>
-    <DialogTitle></DialogTitle>
-    <DialogContent>
-      <TextField
-        autoFocus
-        required
-        margin="dense"
-        id="titulo"
-        label="Titulo"
-        fullWidth
-        className={classes.textfield}
-        variant="standard"
-        value={textData.title || ""}
-        helperText={
-          textData.title?.trim() === "" ?
-            "Quantidade minima insuficiente" : undefined
-        }
-        onChange={event => {
-          const newTitle = event.target.value
-          setTextData((prevTextData: Text) => new Text().fromJSON({ ...prevTextData.toJSON(), title: newTitle }))
-        }}
-      />
-      <TextField
-        id="texto"
-        autoFocus
-        required
-        spellCheck={false}
-        multiline
-        fullWidth
-        className={classes.textfield}
-        rows={5}
-        value={textData.body || ""}
-        helperText={
-          wordCounter(textData.body) < 5 ?
-            "Quantidade minima insuficiente(min. 5 palavras)" : undefined
-        }
-        onChange={event => {
-          const newBody = event.target.value
-          const value = wordCounter(newBody)
-          setTextData((prevTextData: Text) =>
-            new Text().fromJSON({
-              ...prevTextData.toJSON(),
-              body: newBody, number_words: value
-            }))
-            console.log(textData.number_words)  
-          setWords(value)
-        }}
-      />
-      {/*<Editor />*/}
+  }, [Object.keys(errors).length]);
+
+  const createdAt = getValues("created_at") as string | undefined;
+  const updatedAt = getValues("update_at") as string | undefined;
+  const words = getValues("number_words") as number || 0;
+  return (
+    <Dialog open={open} onClose={handleClose} classes={{ paper: classes.paper }}>
+      <DialogTitle>{text?.id ? "Editar Texto" : "Criar Texto"}</DialogTitle>
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
+        <DialogContent>
+          <TextField
+            required
+            margin="dense"
+            id="titulo"
+            label="Título"
+            fullWidth
+            className={classes.textfield}
+            variant="standard"
+            {...register("title")}
+            helperText={errors?.title?.message || ""}
+            error={!!errors?.title}
+          />
+          <TextField
+            id="texto"
+            required
+            spellCheck={false}
+            multiline
+            fullWidth
+            className={classes.textfield}
+            rows={5}
+            {...register("body")}
+            helperText={errors.body?.message}
+            error={!!errors.body}
+            onChange={(event) => {
+              const newBody = event.target.value;
+          //    setValue("number_words", wordCounter(newBody));
+            }}
+          />
+          <Typography sx={{ fontSize: 10 }} className={classes.text}>
+            Palavras escritas: {words}
+          </Typography>
+          <Typography sx={{ fontSize: 10 }} className={classes.text}>
+            Data da criação: {dateAndHour(createdAt)}
+          </Typography>
+          <Typography sx={{ fontSize: 10 }} className={classes.text}>
+            Data da última modificação: {dateAndHour(updatedAt)}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button type="submit" variant="text" size="small" disabled={words < 5}>
+            {text?.id ? "SALVAR" : "CRIAR"}
+          </Button>
+        </DialogActions>
+      </form>
+    </Dialog>
+  );
+};
 
 
-      <Typography sx={{ fontSize: 10 }} className={classes.text}>Palavras escritas: {words}</Typography>
-      <Typography sx={{ fontSize: 10 }} className={classes.text}>Data da criação: {dateAndHour(textData?.created_at)}</Typography>
-      <Typography sx={{ fontSize: 10 }} className={classes.text}>Data da utima modificação: {dateAndHour(textData?.update_at)}</Typography>
-
-    </DialogContent>
-    <DialogActions>
-      <Button
-        disabled={words >= 5 ? false : true}
-        onClick={() => {
-          textData.id ? updateTextRequest(textData) : createTextRequest(textData)
-          handleClose()
-        }}>
-        {text?.id ? "SALVAR" : "CRIAR"}</Button>
-    </DialogActions>
-  </Dialog>
-}
-export default FormDialog 
+export default FormDialog;

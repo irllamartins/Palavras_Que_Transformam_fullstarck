@@ -3,11 +3,12 @@ import FormDialog from "../../pages/workspace/form.dialog"
 import { useEffect, useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { dateAndHour } from "../date.and.hour/date";
-import Text from "../../store/application/model/text"
+import {Text }from "../../store/application/model/text"
 import wordCounter from "../../store/application/utils/word.counter";
 import { DeleteOutline } from "@mui/icons-material";
-import * as TextActions from '../../store/duck/text/actions'
-import { loadUserRequest } from "../../store/duck/user/actions";
+import * as TextActions from '../../store/duck/texts'
+import { loadUserRequest } from "../../store/duck/users"
+import { IActionTextId } from "../../store/duck/texts/types";
 
 const useStyles = makeStyles((theme: Theme) => ({
     card: {
@@ -36,8 +37,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface IProps {
     readonly text: Text
     handleClickOpen(): void
-    findTextRequest(textId: string): void
-    removeTextRequest(textId: string): void
+    findTextRequest(data:IActionTextId): void
+    removeTextRequest(data:IActionTextId): void
 }
 const TextCard = (props: IProps) => {
     const {
@@ -54,7 +55,7 @@ const TextCard = (props: IProps) => {
             <CardActionArea
                 sx={matches ? { height: 150 } : undefined}
                 onClick={() => {
-                    text.id && findTextRequest(text.id)
+                    text.id && findTextRequest({textId:text.id})
                     props.handleClickOpen()
                 }}   >
 

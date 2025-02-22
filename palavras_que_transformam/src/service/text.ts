@@ -1,5 +1,5 @@
 import moment from "moment"
-import Text from "../store/application/model/text"
+import {Text} from "../store/application/model/text"
 import { IAxiosResponse } from "../store/duck/root.types"
 import axiosInstance from "./axiosInstance"
 
@@ -8,8 +8,9 @@ class TextService {
     return axiosInstance
       .get(`/users/${userId}/texts`)
       .then((response) => {
+        
         return {
-          data: response.data.map((data: any) => new Text().fromJSON(data)),
+          data: response.data,
           headers: response.headers
         }
       })
@@ -17,11 +18,10 @@ class TextService {
   public async create(newText: Text): Promise<IAxiosResponse<Text>> {
 
     return axiosInstance
-      .post(`/users/${newText.user_id}/texts`, { ...newText.toJSON()/*, created_at: moment(), update_at: moment()*/ })
+      .post(`/users/${newText.user_id}/texts`, { ...newText, created_at: moment(), update_at: moment() })
       .then((response) => {
-       // console.log("text service", newText, "| retorno")
         return {
-          data: new Text().fromJSON(response.data),
+          data: response.data,
           headers: response.headers
         }
       })
@@ -31,18 +31,18 @@ class TextService {
       .get(`/texts/${textId}`)
       .then((response) => {
         return {
-          data: new Text().fromJSON(response.data),
+          data: response.data,
           headers: response.headers
         }
       })
   }
   public async updade(newText: Text): Promise<IAxiosResponse<Text>> {
     return axiosInstance
-      .put(`users/${newText.user_id}/texts/${newText.id}`,{... newText.toJSON()/*, update_at:moment()*/})
+      .put(`users/${newText.user_id}/texts/${newText.id}`,{... newText, update_at:moment()})
       .then((response) => {
-      //  console.log("response",response)
+        console.log("service",response.data)
         return {
-          data: new Text().fromJSON(response.data)
+          data: response.data
         }
       })
   }

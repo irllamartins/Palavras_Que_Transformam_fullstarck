@@ -20,7 +20,17 @@ const viewTexts = async (req, res) => {
                 error: "No text found"
             })
         }
-        return res.json(text)
+        const list = text.map((item) => ({
+            id: item._id,
+            title: item.title,
+            body: item.body,
+            created_at: item.created_at,
+            update_at: item.update_at,
+            goal: item.goal,
+            number_words: item.number_words,
+            user_id: item.user_id
+        }));
+        return res.json(list)
     } catch (error) {
         console.log(error)
     }
@@ -52,6 +62,7 @@ const registerText = async (req, res) => {
         }
         // cria texto no banco de dados
         const text = await Text.create({
+            id: _id,
             title,
             body,
             user_id: user_id,
@@ -76,7 +87,17 @@ const findText = async (req, res) => {
                 error: "No text found"
             })
         }
-        return res.json(text)
+
+        return res.json({
+            id: text._id,
+            title: text.title,
+            body: text.body,
+            created_at: text.created_at,
+            update_at: text.update_at,
+            goal: text.goal,
+            number_words: text.number_words,
+            user_id: text.user_id
+        })
     } catch (error) {
         console.log(error)
     }
@@ -92,24 +113,39 @@ const updateText = async (req, res) => {
         let user = await User.findOne({ _id: user_id })
         const textTest = await Text.findOne({ _id: id })
 
-        if ( newText.number_words >= user.goal ) {
+        if (newText.number_words >= user.goal) {
             validateGoal = true
             if (textTest.goal !== newText.goal) {
-                user = await User.updateOne({ _id: user_id  }, { point: (user.point||0)+ COUNT })
+                user = await User.updateOne({ _id: user_id }, { point: (user.point || 0) + COUNT })
             }
         }
 
         const date = moment().toISOString()
 
         const text = await Text.findOneAndUpdate({ _id: id },
-            { ...newText, goal: validateGoal, update_at: date })
+            {
+                ...newText,
+                goal: validateGoal,
+                update_at: date,
+             //   id: _id
+            },
+            { new: true })
 
         if (!text) {
             return res.json({
                 error: "No text found"
             })
         }
-        return res.json(text)
+        return res.json({
+            id: text._id,
+            title: text.title,
+            body: text.body,
+            created_at: text.created_at,
+            update_at: text.update_at,
+            goal: text.goal,
+            number_words: text.number_words,
+            user_id: text.user_id
+        })
     } catch (error) {
         console.log(error)
     }

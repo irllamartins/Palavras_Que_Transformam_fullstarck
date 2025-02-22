@@ -1,5 +1,5 @@
 import moment from "moment"
-import User from "../store/application/model/user"
+import {NewUser, User} from "../store/application/model/user"
 import { IAxiosResponse } from "../store/duck/root.types"
 import axiosInstance from "./axiosInstance"
 
@@ -9,28 +9,27 @@ class UserService {
       .get(`/users`)
       .then((response) => {
         return {
-          data: response.data.map((data: any) => new User().fromJSON(data)),
+          data: response.data,
           headers: response.headers
         }
       })
   }
-  public async create(newUser: User): Promise<IAxiosResponse<User>> {
+  public async create(newUser: NewUser): Promise<IAxiosResponse<User>> {
     return axiosInstance
-      .post(`/users`, newUser.toJSON())
+      .post(`/users`, newUser)
       .then((response) => {
         return {
-          data: new User().fromJSON(response.data),
+          data: response.data,
           headers: response.headers
         }
       })
   }
   public async update(newUser: User): Promise<IAxiosResponse<User>> {
     return axiosInstance
-    .put(`/users/${newUser.id}`,{...newUser.toJSON(), update_at: moment()})
+    .put(`/users/${newUser.id}`,{...newUser, update_at: moment()})
     .then((response) => {
-        console.log(response,"user service", newUser)
         return {     
-          data: new User().fromJSON(response.data)
+          data: response.data
         }
       })
   }
@@ -39,7 +38,7 @@ class UserService {
       .get(`/users/${userId}`)
       .then((response) => {
         return {
-          data: new User().fromJSON(response.data),
+          data: response.data,
           headers: response.headers
         }
       })

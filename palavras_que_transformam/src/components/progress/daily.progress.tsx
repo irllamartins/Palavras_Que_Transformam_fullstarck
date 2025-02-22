@@ -1,7 +1,12 @@
-import { Grid, Paper, Theme, Tooltip, useTheme } from "@mui/material"
+import {
+    Grid2 as Grid,
+    Theme,
+    Tooltip,
+    useTheme
+} from "@mui/material"
 import { makeStyles } from "@mui/styles"
-import User from "../../store/application/model/user"
-import Text from "../../store/application/model/text"
+import {User} from "../../store/application/model/user"
+import {Text} from "../../store/application/model/text"
 import moment from "moment"
 import { useAppThemeContext } from "../theme/context"
 import React, { useEffect, useContext } from "react"
@@ -18,9 +23,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 interface IProps {
     readonly texts: Text[]
-    readonly user: User
+    readonly user: User| null
 
-    loadTextRequest(userId: string): void
+    loadTextRequest(data:{userId: string}): void
 }
 const DailyProgress = (props: IProps) => {
     const auth = useContext(AuthContext)
@@ -32,22 +37,22 @@ const DailyProgress = (props: IProps) => {
 
     useEffect(() => {
         if (auth.user?.id) {
-            loadTextRequest(auth.user.id)
+            loadTextRequest({userId: auth.user.id})
         }
     }, [])
-  
+
     const mapTxtGoal = (texts: Text[], day: string) => {
         const validation = texts.some((text: Text) => {
-            
+
             if (text.update_at) {
                 let update = moment(text.update_at).format('DD/MM/YYYY')
-               
-                if (update === day && text.goal === true) {
+
+                if (update === day && text.achieved_goal === true) {
                     return true
                 }
             }
-        }) 
-       
+        })
+
         return validation
     }
     const colorFuture = (name: string) => {
@@ -64,7 +69,7 @@ const DailyProgress = (props: IProps) => {
         {
             Array.from({ length: days }).map((_, i) => {
                 let currentDate = moment().dayOfYear(i).format('DD/MM/YYYY')
-                return <Grid item key={i}>
+                return <Grid key={i}>
                     <Tooltip title={`${currentDate}`} arrow>
                         <div key={i} className={classes.background} style={{ backgroundColor: mapTxtGoal(texts, currentDate) ? `${theme.palette.secondary.main}` : (moment().dayOfYear() > i ? colorFuture(themeName) : "") }}></div>
                     </Tooltip>

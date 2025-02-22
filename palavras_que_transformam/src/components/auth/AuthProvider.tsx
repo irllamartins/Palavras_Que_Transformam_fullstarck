@@ -1,21 +1,22 @@
 import { useEffect, useState } from "react"
-import User from "../../store/application/model/user"
+import { User } from "../../store/application/model/user"
 import { AuthContext } from "./AuthContext"
 import { authSevice } from "../../service/auth"
+import React from 'react';
 
-export const AuthProvider = ({ children }: { children: JSX.Element }) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null)
     const auth = authSevice()
 
-    useEffect(()=>{
+    useEffect(() => {
         validateToken()
-    },[])
+    }, [])
 
-    const validateToken = async () =>{
+    const validateToken = async () => {
         const storageData = localStorage.getItem('authToken')
-        if(storageData){
+        if (storageData) {
             const data = await auth.validateToken(storageData)
-            if(data.user){
+            if (data.user) {
                 setUser(data.user)
             }
         }
@@ -34,8 +35,8 @@ export const AuthProvider = ({ children }: { children: JSX.Element }) => {
         setUser(null)
         setToken('')
     }
-    const setToken = (token:string) =>{
-        localStorage.setItem('authToken',token)
+    const setToken = (token: string) => {
+        localStorage.setItem('authToken', token)
     }
     return (
         <AuthContext.Provider value={{ user, signin, signout }}>

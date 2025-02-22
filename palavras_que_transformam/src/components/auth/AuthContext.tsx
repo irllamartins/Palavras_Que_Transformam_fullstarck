@@ -1,5 +1,5 @@
 import { createContext } from "react"
-import User from "../../store/application/model/user"
+import {User} from "../../store/application/model/user"
 
 export type AuthContextType = {
     user: User | null

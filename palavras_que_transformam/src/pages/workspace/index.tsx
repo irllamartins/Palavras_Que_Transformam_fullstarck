@@ -1,27 +1,29 @@
 import {
     Box,
-    Button,
-    Grid,
-    IconButton,
+    Grid2 as Grid,
     Theme,
-    dialogActionsClasses,
     useMediaQuery
 } from "@mui/material"
-import React, { useEffect, useState, useContext } from 'react'
+import { useEffect, useContext } from 'react'
 import MenuAppBar from "../../components/menu/menu.app.bar"
 import TextCard from "../../components/card/card"
 import ButtonSpeedDial from "../../components/button/button.speed.dial"
-import { DefaultTheme, makeStyles, useTheme } from '@mui/styles'
-import { url } from "inspector"
-import { AppThemeProvider, useAppThemeContext } from "../../components/theme/context"
-import { IApplicationState } from "../../store"
-import { Dispatch, bindActionCreators } from "redux"
-import * as TextActions from '../../store/duck/text/actions'
-import { connect } from "react-redux"
-import { IDialogState } from "../../store/duck/text/types"
+import { makeStyles, useTheme } from '@mui/styles'
+import { AppDispatch, RootState } from "../../store/duck"
+
+import {
+    createTextRequest,
+    findTextRequest,
+    handleDialog,
+    loadTextRequest,
+    removeTextRequest,
+    resetCreate,
+    updateTextRequest
+} from '../../store/duck/texts'
+import { useDispatch, useSelector } from "react-redux"
 import FormDialog from "./form.dialog"
-import Text from "../../store/application/model/text"
 import { AuthContext } from "../../components/auth/AuthContext"
+import TextSchema from "../../store/application/schema/text"
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -82,69 +84,68 @@ const useStyles = makeStyles((theme: Theme) => ({
 
     },
 }))
-interface IPros {
-    readonly texts: Text[]
-    readonly text: Text
-    readonly open: boolean
 
-    loadTextRequest(userId: string): void
-    handleDialog(dialog: any): void
-    createTextRequest(text: Text): void
-    updateTextRequest(text: any): void
-    findTextRequest(textId: string): void
-    removeTextRequest(textId: string): void
-    resetCreate(): void
-}
 
-const Workspace = (props: IPros) => {
-    const {
-        text,
-        texts,
-        open,
-        loadTextRequest,
-        handleDialog,
-        createTextRequest,
-        findTextRequest,
-        updateTextRequest,
-        removeTextRequest,
-        resetCreate
-    } = props
+const Workspace = () => {
+
     const classes = useStyles()
     const theme = useTheme()
     const auth = useContext(AuthContext)
 
-    
+    const text = useSelector((state: RootState) => state.texts.create.text)
+    const texts = useSelector((state: RootState) => state.texts.list.texts)
+    const open = useSelector((state: RootState) => state.texts.dialog.open)
+
+    const dispatch = useDispatch<AppDispatch>()
+
+    /*useEffect(() => {
+        if (auth.user?.id) {
+            dispatch(loadTextRequest({userId:auth.user.id}))
+        }
+    }, [open, text, auth.user])*/
+
     useEffect(() => {
         if (auth.user?.id) {
-            loadTextRequest(auth.user.id)
+            dispatch(loadTextRequest({ userId: auth.user.id }))
         }
-    }, [open, text,auth.user])
+    }, [])
 
-    const handleClickOpen = () => {
-        handleDialog({ open: true })
+    const handleClickOpen = (textId: string) => {
+        dispatch(findTextRequest({ textId: textId }))
+        dispatch(handleDialog({ open: true }))
     }
 
     const handleClose = () => {
-        handleDialog({ open: false })
-        resetCreate()
+        dispatch(handleDialog({ open: false }))
+        dispatch(resetCreate())
     }
 
+    const handleFormSubmit = (text: TextSchema) => {
+        console.log("entrou no form", text); 
+        if (text.id) {
+          dispatch(updateTextRequest({text}));
+        } else {
+          dispatch(createTextRequest({text}));
+        }
+        handleClose();
+      };
+      
     const matches = useMediaQuery('(min-width:400px)')
     return <div className={classes.backgound}>
         <MenuAppBar />
         <Box sx={{ display: 'flex', height: '85vh', alignItems: 'center', justifyContent: 'center' }}>
             <Grid container className={classes.conteinerFomart}>
                 <Grid container className={classes.conteiner} direction={matches ? 'column' : 'row'} spacing={2}>
-                    {texts.map((item, index: number) =>
-                        <Grid key={index} item xs={12} sm={4} md={2}  >
+                    {texts.map((item: any, index: number) => {
+                        return <Grid key={index} size={{ xs: 12, sm: 4, md: 2 }}  >
                             <TextCard
                                 text={item}
-                                handleClickOpen={handleClickOpen}
+                                handleClickOpen={() => handleClickOpen(item.id)}
                                 findTextRequest={findTextRequest}
                                 removeTextRequest={removeTextRequest}
                             />
                         </Grid>
-                    )}
+                    })}
                 </Grid>
 
             </Grid>
@@ -155,23 +156,11 @@ const Workspace = (props: IPros) => {
             user={auth.user}
             handleClose={handleClose}
             handleDialog={handleDialog}
-            createTextRequest={createTextRequest}
-            updateTextRequest={updateTextRequest}
+            handleFormSubmit={handleFormSubmit}
             resetCreate={resetCreate}
         />
         <ButtonSpeedDial handleDialog={handleDialog} open={open} />
     </div >
 }
-const mapStateToProps = (state: IApplicationState) => ({
-    texts: state.text.list.texts,
-    open: state.text.dialog.open,
 
-    text: state.text.create.text
-})
-
-const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-    ...TextActions,
-
-}, dispatch)
-
-export default connect(mapStateToProps, mapDispatchToProps)(Workspace)
+export default Workspace

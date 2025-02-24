@@ -1,21 +1,32 @@
-
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup'
+import * as yup from 'yup';
 import { Text } from '../model/text';
+import wordCounter from '../utils/word.counter';
 
 export const textSchema: yup.ObjectSchema<Text> = yup.object().shape({
-    title: yup.string().required('Necessario titulo'),
-    body: yup.string().required('Quantidade minima insuficiente(min. 5 palavras)'),
-    number_words: yup.number()
-        .min(5, 'Quantidade minima insuficiente(min. 5 palavras)')
-        .required('Age is required'),
-    user_id: yup.string().required(),
-    created_at: yup.string(),
-    update_at: yup.string(),
-    achieved_goal: yup.boolean(),
-    id: yup.string().required()
-})
+  title: yup.string()
+    .required('Necessário título'),
+  body: yup.string()
+    .required('Esse campo é obrigatório')
+    .test(
+      'min-words',
+      'O texto deve conter pelo menos 5 palavras',
+      function(value) {
+        return wordCounter(value || '') >= 5;
+      }
+    ),
+  number_words: yup.number()
+    .min(5, 'Quantidade mínima insuficiente (min. 5 palavras)')
+    .positive()
+    .integer()
+    .required('Palavras são obrigatórias'),
+  user_id: yup.string()
+    .required(),
+  created_at: yup.string(),
+  update_at: yup.string(),
+  achieved_goal: yup.boolean(),
+  id: yup.string()
+});
 
-type TextSchema = yup.InferType<typeof textSchema>
+type TextSchema = yup.InferType<typeof textSchema>;
 
-export default TextSchema
+export default TextSchema;

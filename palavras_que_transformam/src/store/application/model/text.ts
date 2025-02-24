@@ -2,15 +2,8 @@ export enum TextType {
     COMMON = "common",
     CHALLENGE = "challenge"
 }
-
-export interface NewText  {
-    user_id: string,
-    title: string ,
-    body: string ,
-    number_words: number 
-}
 export interface Text  {
-    id: string 
+    id?: string 
     user_id: string,
     title: string ,
     body: string ,

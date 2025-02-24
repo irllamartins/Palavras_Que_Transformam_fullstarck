@@ -3,10 +3,15 @@ import { User } from "../../store/application/model/user"
 import { AuthContext } from "./AuthContext"
 import { authSevice } from "../../service/auth"
 import React from 'react';
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/duck";
+import { authenticationFailure, authenticationSuccess } from "../../store/duck/users";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null)
+
     const auth = authSevice()
+    const dispatch = useDispatch<AppDispatch>()
 
     useEffect(() => {
         validateToken()
@@ -26,8 +31,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (data.user && data.token) {
             setUser(data.user)
             setToken(data.token)
+            dispatch(authenticationSuccess({ user: data.user }))
             return true
         }
+        dispatch(authenticationFailure())
         return false
     }
     const signout = async () => {

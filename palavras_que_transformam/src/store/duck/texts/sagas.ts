@@ -57,7 +57,6 @@ function* updateText(action: IActionType<IActionText>) {
             TextService.updade,
             [text]
         )
-        console.log("!upsagas",updatedText.data)
         yield put<any>(updateTextSuccess({ text: updatedText.data }))
     } catch (e) {
         yield put(updateTextFailure())

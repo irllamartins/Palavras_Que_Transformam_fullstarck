@@ -40,7 +40,6 @@ class TextService {
     return axiosInstance
       .put(`users/${newText.user_id}/texts/${newText.id}`,{... newText, update_at:moment()})
       .then((response) => {
-        console.log("service",response.data)
         return {
           data: response.data
         }

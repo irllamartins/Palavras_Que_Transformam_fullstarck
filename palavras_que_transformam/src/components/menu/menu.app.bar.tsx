@@ -8,7 +8,7 @@ import Menu from '@mui/material/Menu';
 import {
   Avatar,
   CircularProgress,
-  Grid,
+  Grid2 as Grid,
   Box,
   Fab,
   Stack,
@@ -39,33 +39,33 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-const MenuAppBar = () => {
+const MenuAppBar = ({ children }: { children: JSX.Element }) => {
   const navigate = useNavigate()
   const classes = useStyles()
   const { themeName, toggleTheme } = useAppThemeContext()
   const auth = React.useContext(AuthContext)
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [level, setLevel] = React.useState<number>(10);
   const [name, setName] = React.useState<string>("");
-  const [progress, setProgress] = React.useState<number>(0)
-  const [derisablePoints, setDerisablePoints] = React.useState<number>(1000)
+  
+  const [level, setLevel] = React.useState<number>(0);
+  const [desirablePoint, setDesirablePoints] = React.useState<number>(100)
 
-  const calcule = (value:number) => (((value/derisablePoints))*100)
+  const point = auth.user?.point || 0
+
   React.useEffect(() => {
-    if(auth.user){
-      const value = auth.user?.point || 0
+    if (auth.user) {
+     
       setName(auth.user.name || "")
-      setLevel(Math.floor(value/100))
-      setProgress(calcule(value))
+      setLevel(Math.floor(point / desirablePoint))
     }
-    
+
   }, [])
 
   const nameFormat = (value: string) => {
     const divide = value.split(' ')
     return `${divide[0][0]} ${divide[1] ? divide[1][0] : ""}`
-}
+  }
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -74,25 +74,25 @@ const MenuAppBar = () => {
   const handleClose = () => {
     setAnchorEl(null);
   }
+  const currentPoints = point-(level*desirablePoint)
 
   return (
     <Box sx={{ flexGrow: 1 }}>
 
-      <AppBar position="static">
-        <Toolbar>
-          <Grid container>
-            <Grid item><img src={gato} height={50} width={50} /></Grid>
-            <Grid item>
+      <AppBar position="static" >
+        <Toolbar sx={{justifyContent:"space-between"}}>
+          <Box sx={{display:"flex"}}>
+            <Box><img src={gato} height={50} width={50} /></Box>
+            <Box >
               <Typography sx={{ flexGrow: 1, color: "white" }}>
                 Palavras Que
               </Typography>
               <Typography sx={{ flexGrow: 1, color: "white" }}>
                 Transformam
               </Typography>
-            </Grid>
-          </Grid>
-          <div>
-
+            </Box>
+          </Box>
+          <Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <IconButton onClick={toggleTheme} >
                 {themeName === "light" ? <LightModeOutlined className={classes.constrast} /> : <NightlightOutlined className={classes.constrast} />}
@@ -101,7 +101,7 @@ const MenuAppBar = () => {
                 <CircularProgress
                   size={50}
                   variant="determinate"
-                  value={progress}
+                  value={currentPoints}
                   sx={{
                     color: "#23dd7a",
                     position: 'absolute',
@@ -171,10 +171,11 @@ const MenuAppBar = () => {
               </MenuItem>
             </Menu>
 
-          </div>
+          </Box>
 
         </Toolbar>
       </AppBar>
+      {children}
     </Box>
   );
 }

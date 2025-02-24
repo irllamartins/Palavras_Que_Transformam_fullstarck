@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 interface IProps {
     readonly texts: Text[]
-    readonly user: User| null
 
     loadTextRequest(data:{userId: string}): void
 }
@@ -32,7 +31,7 @@ const DailyProgress = (props: IProps) => {
     const { themeName, toggleTheme } = useAppThemeContext()
     const theme = useTheme()
     const classes = useStyles()
-    const { texts, user, loadTextRequest } = props
+    const { texts,loadTextRequest } = props
     const days: number = 365
 
     useEffect(() => {

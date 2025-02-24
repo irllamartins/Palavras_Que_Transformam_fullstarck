@@ -73,7 +73,6 @@ const Profile = () => {
 
     const update = (user: User) => {
         if (user.id) {
-            console.log("update profile", user)
             dispatch(updateUserRequest({user:user}))
         }
     }
@@ -83,9 +82,7 @@ const Profile = () => {
         return `${divide[0][0]} ${divide[1] ? divide[1][0] : ""}`
     }
     const opcoes = [8, 500, 1000, 1200, 1500, 1800, 2000, 2500, 3000, 3500, 4000, 5000]
-    return <div >
-        <MenuAppBar />
-        <Box sx={{ display: 'flex', height: '85vh', alignItems: 'center', justifyContent: 'center' }}>
+    return  <Box sx={{ display: 'flex', height: '85vh', alignItems: 'center', justifyContent: 'center' }}>
             <Grid container direction="row" className={classes.container}>
                 <Grid container size={{sm:5}} >
                     <Paper className={clsx(classes.paper, classes.text)}>
@@ -199,7 +196,7 @@ const Profile = () => {
 
             </Grid>
         </Box>
-    </div >
+   
 }
 
 export default Profile

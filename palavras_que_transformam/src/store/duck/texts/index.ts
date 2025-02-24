@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AsyncStateStatus } from '../root.types'
 import { IActionDialog, IActionText, IActionTextId, IActionTextLoad, IActionUserId, ITextState } from './types'
-import {Text, TextType} from '../../application/model/text'
+import { Text, TextType } from '../../application/model/text'
+import moment from 'moment'
 
 const initialState: ITextState = {
     create: {
@@ -26,7 +27,7 @@ export const TextSlice = createSlice({
         resetCreate(state) {
             state.create = {
                 text: null,
-                status: AsyncStateStatus.INITIAL
+                status: AsyncStateStatus.SUCCESS
             }
         },
         handleDialog(state, action: PayloadAction<IActionDialog>) {
@@ -39,7 +40,11 @@ export const TextSlice = createSlice({
         },
         createTextSuccess(state, action: PayloadAction<IActionText>) {
             state.create.text = action.payload.text
-            state.list.texts = [...state.list.texts,action.payload.text]
+            state.list.texts = [...state.list.texts, action.payload.text].sort((a: Text, b: Text) => {
+                const dateA = moment(a.update_at);
+                const dateB = moment(b.update_at);
+                return dateB.isBefore(dateA) ? -1 : dateB.isAfter(dateA) ? 1 : 0;
+              } )
             state.create.status = AsyncStateStatus.SUCCESS
         },
         createTextFailure(state) {
@@ -56,7 +61,7 @@ export const TextSlice = createSlice({
             state.list.texts = []
             state.create.status = AsyncStateStatus.FAILURE
         },
-        findTextRequest(state, action:PayloadAction<IActionTextId>) {
+        findTextRequest(state, action: PayloadAction<IActionTextId>) {
             state.create.status = AsyncStateStatus.LOADING
         },
         findTextSuccess(state, action: PayloadAction<IActionText>) {
@@ -72,9 +77,13 @@ export const TextSlice = createSlice({
         },
         updateTextSuccess(state, action: PayloadAction<IActionText>) {
             const { text } = action.payload
-            const updadedList = state.list.texts?.map((textItem:Text) =>
-                textItem.id === text.id ? text : text
-            )
+            const updadedList = state.list.texts?.map((textItem: Text) =>
+                textItem.id !== text.id ? textItem : text
+            ).sort((a: Text, b: Text) => {
+                const dateA = moment(a.update_at);
+                const dateB = moment(b.update_at);
+                return dateB.isBefore(dateA) ? -1 : dateB.isAfter(dateA) ? 1 : 0;
+              } )
             state.list.texts = updadedList
             state.create.status = AsyncStateStatus.SUCCESS
         },

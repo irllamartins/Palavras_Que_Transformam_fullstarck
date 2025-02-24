@@ -14,7 +14,7 @@ const viewTexts = async (req, res) => {
         const { user_id } = req.params
 
         // checar se o usuario existe
-        const text = await Text.find({ user_id: user_id })
+        const text = await Text.find({ user_id: user_id }).sort({ update_at: -1 })
         if (!text) {
             return res.json({
                 error: "No text found"
@@ -26,7 +26,7 @@ const viewTexts = async (req, res) => {
             body: item.body,
             created_at: item.created_at,
             update_at: item.update_at,
-            goal: item.goal,
+            achieved_goal: item.achieved_goal,
             number_words: item.number_words,
             user_id: item.user_id
         }));
@@ -40,7 +40,7 @@ const viewTexts = async (req, res) => {
 const registerText = async (req, res) => {
     try {
         const { user_id } = req.params
-        const { title, body, goal } = req.body
+        const { title, body } = req.body
 
         let validateGoal = false
         // verifica existencia de titulo
@@ -57,22 +57,30 @@ const registerText = async (req, res) => {
             })
         }
         const user = await User.findOne({ _id: user_id })
-        if (user.goal <= goal) {
+        if (user.goal <= number_words) {
             validateGoal = true
         }
         // cria texto no banco de dados
         const text = await Text.create({
-            id: _id,
             title,
             body,
             user_id: user_id,
-            goal: validateGoal,
+            achieved_goal: validateGoal,
             created_at: moment().toISOString(),
             update_at: moment().toISOString()
         })
-        return res.json(text)
+        return res.status(201).json({
+            id: text._id,
+            title:text.title,
+            body:text.body,
+            user_id: text.user_id,
+            achieved_goal: text.validateGoal,
+            created_at: text.created_at,
+            update_at: text.update_at
+        })
     } catch (error) {
         console.log("textcreater: ", error)
+        return res.status(400)
     }
 }
 
@@ -88,18 +96,19 @@ const findText = async (req, res) => {
             })
         }
 
-        return res.json({
+        return res.status(200).json({
             id: text._id,
             title: text.title,
             body: text.body,
             created_at: text.created_at,
             update_at: text.update_at,
-            goal: text.goal,
+            achieved_goal: text.goal,
             number_words: text.number_words,
             user_id: text.user_id
         })
     } catch (error) {
         console.log(error)
+        return res.status(404)
     }
 }
 
@@ -125,24 +134,24 @@ const updateText = async (req, res) => {
         const text = await Text.findOneAndUpdate({ _id: id },
             {
                 ...newText,
-                goal: validateGoal,
+                achieved_goal: validateGoal,
                 update_at: date,
              //   id: _id
             },
             { new: true })
 
         if (!text) {
-            return res.json({
+            return res.status(404).json({
                 error: "No text found"
             })
         }
-        return res.json({
+        return res.status(200).json({
             id: text._id,
             title: text.title,
             body: text.body,
             created_at: text.created_at,
             update_at: text.update_at,
-            goal: text.goal,
+            achieved_goal: text.achieved_goal,
             number_words: text.number_words,
             user_id: text.user_id
         })
@@ -156,15 +165,14 @@ const removeText = async (req, res) => {
     try {
         const id = req.params.id
         // checar se o usuario existe
-        const text = await Text.deleteOne({ _id: id })
+        const text = await Text.deleteOne({ _id: id }).sort({ update_at: -1 })
         if (!text) {
-            return res.json({
-                error: "No text found"
-            })
+            return res.status(404).json({ mensagem: 'Item não encontrado' });
         }
-        return res.json(text)
+        return res.status(200).json(text)
     } catch (error) {
         console.log(error)
+        return res.status(500).json({ mensagem: 'Erro ao deletar o item' });
     }
 }
 module.exports = {

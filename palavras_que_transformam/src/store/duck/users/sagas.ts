@@ -52,7 +52,6 @@ function* createUser(action: IActionType<IActionNewUser>) {
 function* updateUser(action: IActionType<IActionUser>) {
     try {
         const { user } = action.payload
-        console.log("sagas",user)
         const updatedUser: IAxiosResponse<User> = yield apply(
             UserService,
             UserService.update, 

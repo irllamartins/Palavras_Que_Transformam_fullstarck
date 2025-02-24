@@ -24,11 +24,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const actions = [
     { icon: <NoteAddOutlined style={{ color: "white" }} />, name: 'Novo texto', cor: "#772EB0", type: TextType.COMMON },
-  //  { icon: < LightbulbOutlined />, name: 'Desafio diario', cor: "#F1CE15", type: TextType.CHALLENGE },
+    { icon: < LightbulbOutlined />, name: 'Desafio diario', cor: "#F1CE15", type: TextType.CHALLENGE },
 ];
 interface IProps {
     readonly open: boolean
-    readonly handleDialog: any
+   
+    handleDialog(type:string): void
 }
 export default function ButtonSpeedDial(props: IProps) {
     const { open, handleDialog } = props
@@ -42,6 +43,7 @@ export default function ButtonSpeedDial(props: IProps) {
         return () => window.removeEventListener('resize', handleResize);
     }, [])
 
+
     return (
         <Box sx={{ height: `${0}vh`, transform: 'translateZ(0px)', flexGrow: 1 }}>
             <SpeedDial
@@ -54,7 +56,7 @@ export default function ButtonSpeedDial(props: IProps) {
                         key={action.name}
                         icon={action.icon}
                         tooltipTitle={action.name}
-                        onClick={() => handleDialog({ open: true, type: action.type })}
+                        onClick={()=>handleDialog(action.type)}
                         FabProps={{ style: { backgroundColor: action.cor } }}
                     />
                 ))}

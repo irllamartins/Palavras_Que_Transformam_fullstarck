@@ -8,7 +8,7 @@ const textSchema = new Schema({
     created_at:String,   
     update_at:String,
     number_words:Number,
-    goal:Boolean
+    achieved_goal:Boolean
 })
 
 const TextModel = mongoose.model('Text', textSchema)

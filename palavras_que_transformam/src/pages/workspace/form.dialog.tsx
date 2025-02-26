@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -11,14 +11,14 @@ import { makeStyles } from '@mui/styles';
 import { Theme, Typography } from '@mui/material';
 
 import { dateAndHour } from '../../components/date.and.hour/date';
-import wordCounter from '../../store/application/utils/word.counter';
 import { Controller, useForm } from 'react-hook-form';
 import TextSchema, { textSchema } from '../../store/application/schema/text';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { IActionDialog, IActionTextId } from '../../store/duck/texts/types';
+import { IActionDialog } from '../../store/duck/texts/types';
 import { User } from '../../store/application/model/user';
 import { Text } from '../../store/application/model/text';
 import { DeleteOutline } from '@mui/icons-material';
+import TextEditor from '../../components/editor';
 
 const useStyles = makeStyles((theme: Theme) => ({
   dialog: {
@@ -59,7 +59,7 @@ interface IProps {
 const FormDialog = (props: IProps) => {
   const classes = useStyles();
   const { text, open, user, handleClose, handleFormSubmit, removeText } = props;
-
+  const [wordsCount, setWordsCount] = useState(0);
   const {
     control,
     register,
@@ -67,7 +67,6 @@ const FormDialog = (props: IProps) => {
     getValues,
     reset,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<TextSchema>({
     mode: "onChange",
@@ -86,14 +85,17 @@ const FormDialog = (props: IProps) => {
   }, [open, text]);
 
   useEffect(() => {
-    if (Object.keys(errors).length) {
+    if (Object.keys(errors)) {
       console.error("Erros no formulário:", errors);
     }
-  }, [Object.keys(errors).length]);
+  }, [Object.keys(errors)]);
 
   const createdAt = getValues("created_at") as string | undefined;
   const updatedAt = getValues("update_at") as string | undefined;
-  const words = watch("number_words") as number || 0;
+
+  useEffect(()=>{
+    setValue("number_words", wordsCount as unknown as never )
+  },[setWordsCount])
 
   return (
     <Dialog open={open} onClose={handleClose} classes={{ paper: classes.paper }}>
@@ -102,7 +104,7 @@ const FormDialog = (props: IProps) => {
         <DialogContent sx={{ paddingBlock: 0 }}>
           <TextField
             required
-            margin="none"
+            margin="normal"
             {...register("title")}
             //   label="Título"
             placeholder='Digite o Titulo'
@@ -110,10 +112,29 @@ const FormDialog = (props: IProps) => {
             className={classes.textfield}
             size='small'
             variant="outlined"
-            helperText={errors?.title?.message }
+            helperText={errors?.title?.message}
             error={!!errors?.title}
           />
-          <TextField
+         <Controller
+        name="body"
+        control={control}
+        render={({ field }) => (
+          <>
+          {console.log("antes editor",field.value)}
+            <TextEditor
+              value={field.value } 
+              onChange={field.onChange} 
+              setWordsCount={setWordsCount}
+        
+            
+            />
+            {/* Exibe erros se existirem */}
+            {errors.body && <Typography color='error' variant='caption'>{errors.body.message}</Typography>}
+
+          </>
+        )}
+      />
+          {/* <TextField
             required
             spellCheck={false}
             multiline
@@ -129,14 +150,14 @@ const FormDialog = (props: IProps) => {
               }
             })}
             helperText={errors.body?.message}
-            error={!!errors.body}
-          />
+           
+          />*/}
           <Typography
             variant='body1'
             sx={{ fontSize: 10 }}
             className={classes.text}
           >
-            Palavras escritas: {words}
+            Palavras escritas: {wordsCount}
           </Typography>
           <Typography
             variant='body1'
@@ -169,7 +190,7 @@ const FormDialog = (props: IProps) => {
             type="submit"
             variant="text"
             size="small"
-            disabled={words < 5}
+            disabled={Object.keys(errors).length>0}
           >
             {text?.id ? "SALVAR" : "CRIAR"}
           </Button>

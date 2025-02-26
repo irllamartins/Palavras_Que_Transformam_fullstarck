@@ -19,13 +19,11 @@ import React, { useState } from 'react'
 import { makeStyles } from '@mui/styles'
 import { AppDispatch, RootState } from '../../store/duck'
 import { useDispatch, useSelector } from 'react-redux'
-import { User } from '../../store/application/model/user'
 import { AuthContext } from '../../components/auth/AuthContext'
 import { useContext } from "react"
 
-import axiosInstance from '../../service/axiosInstance'
-import axios from 'axios'
 import { createUserRequest } from '../../store/duck/users'
+import { loadTextRequest } from '../../store/duck/texts'
 const useStyles = makeStyles((theme: Theme) => ({
     fixed: {
         right: "10px",
@@ -58,7 +56,6 @@ const Register = () => {
 
     const classes = useStyles()
     const navigate = useNavigate()
-    const users = useSelector((state: RootState) => state.users.list.users)
 
     const dispatch: AppDispatch = useDispatch()
 
@@ -95,6 +92,7 @@ const Register = () => {
 
             if (isAuthenticated) {
                 // Navegamos para a página inicial se o usuário for autenticado
+                auth.user?.id && dispatch(loadTextRequest({ userId: auth.user.id }))
                 navigate('/workspace')
             }
             else {
@@ -176,8 +174,13 @@ const Register = () => {
             </Carousel>
         </Grid>
 
-        <Grid container size={{ sm: 3, md: 3, xs: 3 }} sx={{ alignItems: 'center', justifyContent: 'space-around', padding: "1%", }} >
-
+        <Grid
+            container
+            size={{ sm: 3, md: 3, xs: 3 }}
+            alignItems='center'
+            justifyContent='center'
+            sx={{  padding: "1%" }}
+        >
             <Grid container direction="row" size={{ sm: 12 }}
                 alignItems="center" justifyContent="center" >
                 <Grid >
@@ -190,15 +193,24 @@ const Register = () => {
             </Grid>
             <Grid >
                 <ToggleButtonGroup
+                    size='small'
                     value={toggle}
                     exclusive
                     onChange={(event, option: string) => setToggle(option)}
                     aria-label="options"
                 >
-                    <ToggleButton id={Toggle.LOGIN} value={Toggle.LOGIN} aria-label="login" >
+                    <ToggleButton
+                        id={Toggle.LOGIN}
+                        value={Toggle.LOGIN}
+                        aria-label="login"
+                    >
                         <Typography variant='button'>Login</Typography>
                     </ToggleButton>
-                    <ToggleButton id={Toggle.REGISTER} value={Toggle.REGISTER} aria-label="register">
+                    <ToggleButton
+                        id={Toggle.REGISTER}
+                        value={Toggle.REGISTER}
+                        aria-label="register"
+                    >
                         <Typography variant='button'>Registrar</Typography>
                     </ToggleButton>
                 </ToggleButtonGroup>

@@ -8,7 +8,6 @@ import { AuthProvider } from './components/auth/AuthProvider';
 import { RequireAuth } from './components/private/RequireAuth';
 import { SnackbarProvider } from 'notistack';
 
-
 function App() {
 
   return (

@@ -16,13 +16,11 @@ import {
 
 function* loadYears() {
      try {
-        console.log("!entrou")
          const response: IAxiosResponse<any[]> = yield apply(
              RankingService,
              RankingService.getYears,         
              []
          )
-         console.log("!saiu")
          yield put(rankingYearSuccess({list:response.data}))
      } catch (e) {
          yield put(rankingYearFailure())

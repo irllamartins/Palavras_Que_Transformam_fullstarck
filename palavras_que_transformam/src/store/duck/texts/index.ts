@@ -85,6 +85,7 @@ export const TextSlice = createSlice({
                 return dateB.isBefore(dateA) ? -1 : dateB.isAfter(dateA) ? 1 : 0;
               } )
             state.list.texts = updadedList
+            state.create.text = text
             state.create.status = AsyncStateStatus.SUCCESS
         },
         updateTextFailure(state) {

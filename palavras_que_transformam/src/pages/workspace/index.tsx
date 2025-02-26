@@ -27,18 +27,18 @@ import TextSchema from "../../store/application/schema/text"
 
 
 const useStyles = makeStyles((theme: Theme) => ({
-   /*   backgound: {
-      // backgroundImage:'url("https://img.freepik.com/fotos-gratis/texturas-de-madeira-velha_74190-5512.jpg?size=626&ext=jpg")',
-        // backgroundImage:'url("https://totalhardwareja.com/cdn/shop/products/Prisma-Blue-HD-52110-ok-FACE-1_666x387.jpg?v=1652823897")',
-        //backgroundImage:'url("https://images.hdqwalls.com/download/minimalist-landscape-to-2932x2932.jpg")',
-        //backgroundImage:'url("https://i.pinimg.com/236x/33/0c/6d/330c6d5c2b49ce231d44e0cf691be571.jpg?nii=t")',
-        //backgroundImage:'url("https://wallup.net/wp-content/uploads/2016/03/12/161242-simple_background-minimalism-cat-drawing-animals-sitting-blue_background.jpg")',
-         backgroundImage:'url("https://wallpaperaccess.com/full/2905605.jpg")',
-  
-         backgroundRepeat: "repeat",
-         backgroundSize: 'cover',
-        backgroundColor: `${theme.palette.background.default}`
-    },*/
+    /*   backgound: {
+       // backgroundImage:'url("https://img.freepik.com/fotos-gratis/texturas-de-madeira-velha_74190-5512.jpg?size=626&ext=jpg")',
+         // backgroundImage:'url("https://totalhardwareja.com/cdn/shop/products/Prisma-Blue-HD-52110-ok-FACE-1_666x387.jpg?v=1652823897")',
+         //backgroundImage:'url("https://images.hdqwalls.com/download/minimalist-landscape-to-2932x2932.jpg")',
+         //backgroundImage:'url("https://i.pinimg.com/236x/33/0c/6d/330c6d5c2b49ce231d44e0cf691be571.jpg?nii=t")',
+         //backgroundImage:'url("https://wallup.net/wp-content/uploads/2016/03/12/161242-simple_background-minimalism-cat-drawing-animals-sitting-blue_background.jpg")',
+          backgroundImage:'url("https://wallpaperaccess.com/full/2905605.jpg")',
+   
+          backgroundRepeat: "repeat",
+          backgroundSize: 'cover',
+         backgroundColor: `${theme.palette.background.default}`
+     },*/
     text: {
         color: `${theme.palette.primary.contrastText}`,
     },
@@ -97,17 +97,11 @@ const Workspace = () => {
 
     const dispatch = useDispatch<AppDispatch>()
 
-    /*useEffect(() => {
-        if (auth.user?.id) {
-            dispatch(loadTextRequest({userId:auth.user.id}))
-        }
-    }, [open, text, auth.user])*/
-
     useEffect(() => {
         if (auth.user?.id) {
             dispatch(loadTextRequest({ userId: auth.user.id }))
         }
-    },[])
+    }, [auth.user])
 
     const handleClickOpen = (textId: string) => {
         dispatch(findTextRequest({ textId: textId }))
@@ -120,6 +114,7 @@ const Workspace = () => {
     }
 
     const handleFormSubmit = (text: TextSchema) => {
+        console.log(text)
         if (text.id) {
             dispatch(updateTextRequest({ text }));
         } else {
@@ -132,16 +127,16 @@ const Workspace = () => {
         dispatch(handleDialog({ open: true, type: type }))
     }
 
-    const removeText = (textId:string)=>{
-        if (textId&&auth.user?.id) {
-              dispatch(removeTextRequest({textId}) )
-              dispatch(loadTextRequest({ userId: auth.user.id }))
+    const removeText = (textId: string) => {
+        if (textId && auth.user?.id) {
+            dispatch(removeTextRequest({ textId }))
+            dispatch(loadTextRequest({ userId: auth.user.id }))
         }
     }
     const matches = useMediaQuery('(min-width:400px)')
     return <div >
         <Box sx={{ display: 'flex', height: '85vh', alignItems: 'center', justifyContent: 'center' }}>
-            <Grid container  sx={{position: "relative", justifyContent: "center"}}>
+            <Grid container sx={{ position: "relative", justifyContent: "center" }}>
                 <Grid container className={classes.conteiner} direction={matches ? 'column' : 'row'} spacing={2}>
                     {texts.map((item: any, index: number) => {
                         return <Grid key={index} size={{ xs: 12, sm: 6, md: 2 }}  >

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ContentState, convertFromHTML, convertFromRaw, convertToRaw, EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import 'draft-js/dist/Draft.css'
 import { configToolbar } from './config.toolbar';
 import { useTheme } from '@mui/material';
 import draftToHtml from 'draftjs-to-html';
@@ -17,7 +18,7 @@ interface EditorProps {
 
 const TextEditor: React.FC<EditorProps> = ({ onChange, value, setWordsCount }) => {
     const theme = useTheme();
-    
+
     const [editorState, setEditorState] = useState<EditorState>(EditorState.createEmpty());
 
     useEffect(() => {
@@ -47,10 +48,10 @@ const TextEditor: React.FC<EditorProps> = ({ onChange, value, setWordsCount }) =
 
         // Converter o conteúdo para HTML e passar para o `onChange` e variaveo body
         const contentHTML = draftToHtml(convertToRaw(newState.getCurrentContent()));
-        
+
         if (contentHTML !== value) {
             onChange(contentHTML);
-          }
+        }
     };
 
     // Ref para o editor (para manipulação de rolagem, se necessário)
@@ -66,9 +67,6 @@ const TextEditor: React.FC<EditorProps> = ({ onChange, value, setWordsCount }) =
         <div ref={editorRef}>
             <Editor
                 editorState={editorState}
-                toolbarClassName="toolbarClassName"
-                wrapperClassName="wrapperClassName"
-                editorClassName="editorClassName"
                 editorStyle={{
                     border: "1px solid #ccc",
                     borderRadius: "4px",
@@ -80,7 +78,18 @@ const TextEditor: React.FC<EditorProps> = ({ onChange, value, setWordsCount }) =
                     },
                 }}
                 onEditorStateChange={onEditorStateChange}
-                toolbar={configToolbar()}
+                // toolbar={configToolbar()}
+                toolbar={{
+                    options: ['inline', 'fontSize', 'fontFamily', 'list'],
+                    inline: { options: ['bold', 'italic', 'underline', 'strikethrough'] },
+                    list: { options: ['unordered', 'ordered'] },
+                    fontSize: { 
+                        options: [8, 10, 12, 16, 24] 
+                    },
+                    fontFamily: { 
+                        options: ['Arial', 'Georgia', 'Times New Roman'] 
+                    }
+                }}
                 localization={{
                     locale: 'pt',
                 }}

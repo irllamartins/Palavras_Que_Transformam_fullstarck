@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
-import { ThemeProvider, Box, createTheme } from '@mui/material';
+import { ThemeProvider, Box, createTheme, CssBaseline } from '@mui/material';
 import { DarkTheme, LightTheme } from './themes';
 
 enum Theme{
@@ -33,7 +33,8 @@ export const AppThemeProvider = ({ children }: React.PropsWithChildren<{}>) => {
 
 
   return <ThemeContext.Provider value={{ themeName, toggleTheme }}>
-    <ThemeProvider theme={createTheme(theme)}>
+    <ThemeProvider theme={createTheme(theme)}>   
+    <CssBaseline />
       <Box width="100vw" height="100vh" style={{ margin: 0, padding: 0 }} bgcolor={theme.palette.background.default}>
         {children}
       </Box>

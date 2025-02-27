@@ -19,21 +19,17 @@ const TextEditor: React.FC<EditorProps> = ({ onChange, value, setWordsCount }) =
     const theme = useTheme();
     
     const [editorState, setEditorState] = useState<EditorState>(EditorState.createEmpty());
-    const [initialized, setInitialized] = useState(false); // Controla inicialização para evitar sobrescrita
 
-  // Atualiza o editor SOMENTE quando `value` mudar e ele for diferente do estado atual
-  useEffect(() => {
-   
-        console.log("dentro",value)
-      if (value) {
-        const blocksFromHtml = htmlToDraft(value);
-        const { contentBlocks, entityMap } = blocksFromHtml;
-        const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
-        setEditorState(EditorState.createWithContent(contentState));
-      }
-      setInitialized(true); // Evita que o useEffect sobrescreva mudanças futuras
-    
-  }, [value]); // Roda apenas na inicialização
+    useEffect(() => {
+        if (value && !editorState.getCurrentContent().hasText()) {
+            const blocksFromHtml = htmlToDraft(value);
+            if (blocksFromHtml) {
+                const { contentBlocks, entityMap } = blocksFromHtml;
+                const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+                setEditorState(EditorState.createWithContent(contentState));
+            }
+        }
+    }, [value]);
 
 
     const onEditorStateChange = (newState: EditorState) => {

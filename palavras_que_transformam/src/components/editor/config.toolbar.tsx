@@ -19,12 +19,12 @@ export const configToolbar= () => {
       component: undefined,
       dropdownClassName: undefined,
       options: ['bold', 'italic', 'underline', 'strikethrough', 'monospace', 'superscript', 'subscript'],
-      bold: { 
+      /* bold: { 
         icon: "B",  
         //  className: 'my-bold-button',Classe personalizada para estilização
         style: { backgroundColor: 'lightgray', borderRadius: '4px' }, // Estilo inline
       },
-      /* italic: { icon: italic, className: undefined },
+      italic: { icon: italic, className: undefined },
        underline: { icon: underline, className: undefined },
        strikethrough: { icon: strikethrough, className: undefined },
        monospace: { icon: monospace, className: undefined },

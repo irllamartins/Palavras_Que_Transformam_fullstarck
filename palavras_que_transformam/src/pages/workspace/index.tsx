@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux"
 import FormDialog from "./form.dialog"
 import { AuthContext } from "../../components/auth/AuthContext"
 import TextSchema from "../../store/application/schema/text"
+import TextEditor from "../../components/editor"
 
 
 const useStyles = makeStyles((theme: Theme) => ({

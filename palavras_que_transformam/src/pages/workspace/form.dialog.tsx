@@ -85,10 +85,10 @@ const FormDialog = (props: IProps) => {
   }, [open, text]);
 
   useEffect(() => {
-    if (Object.keys(errors)) {
+    if (Object.keys(errors).length) {
       console.error("Erros no formulário:", errors);
     }
-  }, [Object.keys(errors)]);
+  }, [Object.keys(errors).length]);
 
   const createdAt = getValues("created_at") as string | undefined;
   const updatedAt = getValues("update_at") as string | undefined;
@@ -120,15 +120,11 @@ const FormDialog = (props: IProps) => {
         control={control}
         render={({ field }) => (
           <>
-          {console.log("antes editor",field.value)}
             <TextEditor
               value={field.value } 
               onChange={field.onChange} 
               setWordsCount={setWordsCount}
-        
-            
             />
-            {/* Exibe erros se existirem */}
             {errors.body && <Typography color='error' variant='caption'>{errors.body.message}</Typography>}
 
           </>

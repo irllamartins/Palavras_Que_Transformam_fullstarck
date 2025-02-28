@@ -17,7 +17,7 @@ export const textSchema: yup.ObjectSchema<Text> = yup.object().shape({
   number_words: yup.number()
     .positive()
     .integer()
-   /* .required('Palavras são obrigatórias')*/,
+    .required('Palavras são obrigatórias'),
   user_id: yup.string()
     .required(),
   created_at: yup.string(),

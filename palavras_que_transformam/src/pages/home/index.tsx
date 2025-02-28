@@ -1,9 +1,5 @@
 
 import {
-    Carousel,
-    CarouselItem,
-} from 'react-bootstrap'
-import {
     TextField,
     Grid2 as Grid,
     Typography,
@@ -11,7 +7,7 @@ import {
     ToggleButtonGroup,
     Button,
     Theme,
-    Container
+    useTheme
 } from '@mui/material'
 import gato from "../../assert/gato-sem-fundo.png"
 import { useNavigate } from 'react-router-dom'
@@ -24,6 +20,8 @@ import { useContext } from "react"
 
 import { createUserRequest } from '../../store/duck/users'
 import { loadTextRequest } from '../../store/duck/texts'
+import { UserType } from '../../store/application/model/user'
+
 const useStyles = makeStyles((theme: Theme) => ({
     fixed: {
         right: "10px",
@@ -58,6 +56,7 @@ const Register = () => {
     const navigate = useNavigate()
 
     const dispatch: AppDispatch = useDispatch()
+    const theme = useTheme()
 
 
     const [name, setName] = useState<string>("")
@@ -67,9 +66,8 @@ const Register = () => {
 
     const auth = useContext(AuthContext)
 
-    /*useEffect(() => {
-        loadUserRequest()
-    }, [])*/
+    const colorFont = theme.palette.getContrastText(theme.palette.background.paper)
+
 
     const items = [
         {
@@ -102,84 +100,23 @@ const Register = () => {
 
     }
 
-    /* const loginUser = async () => {
-        const { data } = await axiosInstance.post("/signin", {
-            email, password
-        }).then(response => {
-            console.log(response.data);
-            return response.data
-        })
-            .catch(error => {
-                if (error.response) {
-                    // A solicitação foi feita e o servidor respondeu com um código de status
-                    console.log(error.response.data);
-                    console.log(error.response.status);
-                    console.log(error.response.headers);
-                } else if (error.request) {
-                    // A solicitação foi feita, mas nenhuma resposta foi recebida
-                    console.log("nenhuma resposta foi recebida",error.request);
-                } else {
-                    // Algo aconteceu na configuração da solicitação que desencadeou um erro
-                    console.log('Erro', error.message);
-                }
-            })
-
-        if (data&&data.error) {
-            console.log("login erro", data.error)
-        } else {
-            console.log("sucess")
-        }
-    }*/
-    /* const registerUser = async () => {
-         const { data } = await axiosInstance.post("/users", {
-             name, email, password
-         }).then(response => {
-             console.log(response.data);
-             return response.data
-         })
-             .catch(error => {
-                 if (error.response) {
-                     // A solicitação foi feita e o servidor respondeu com um código de status
-                     console.log(error.response.data);
-                     console.log(error.response.status);
-                     console.log(error.response.headers);
-                 } else if (error.request) {
-                     // A solicitação foi feita, mas nenhuma resposta foi recebida
-                     console.log("nenhuma resposta foi recebida",error.request);
-                 } else {
-                     // Algo aconteceu na configuração da solicitação que desencadeou um erro
-                     console.log('Erro', error.message);
-                 }
-             })
- 
-         if (data.error) {
-             console.log("register erro", data.error)
-         } else {
-             console.log("sucess")
-         }
-     }*/
     return <Grid container>
-        <Grid size={{ sm: 9 }}>
-            <Carousel controls={false} >
-                {items.map((item, index) => (
-                    <CarouselItem key={index}>
-                        {/*<div className="vh-100">
-                            <img src={item.src} alt={item.altText} className="w-100 h-100" />
-                        </div>*/}
+        {/*<Grid size={{ sm: 9 }}>
+               items.map((item, index) => (
+                  
                         <Container>
                             <Typography>{index}</Typography>
                         </Container>
                     </CarouselItem>
-                ))}
-            </Carousel>
-        </Grid>
+                ))
+        </Grid>*/}
 
         <Grid
             container
             size={{ sm: 3, md: 3, xs: 3 }}
             alignItems='center'
             justifyContent='center'
-            sx={{  padding: "1%" }}
+            sx={{ padding: "1%" }}
         >
             <Grid container direction="row" size={{ sm: 12 }}
                 alignItems="center" justifyContent="center" >
@@ -187,14 +124,15 @@ const Register = () => {
                     <img src={gato} width={100} height={100} />
                 </Grid>
                 <Grid >
-                    <Typography variant='h5'>Palavras que </Typography>
-                    <Typography variant='h5' >transformam</Typography>
+                    <Typography color={colorFont} variant='h5'>Palavras que </Typography>
+                    <Typography color={colorFont} variant='h5' >transformam</Typography>
                 </Grid>
             </Grid>
             <Grid >
                 <ToggleButtonGroup
                     size='small'
                     value={toggle}
+
                     exclusive
                     onChange={(event, option: string) => setToggle(option)}
                     aria-label="options"
@@ -288,16 +226,19 @@ const Register = () => {
                                 dispatch(
                                     createUserRequest({
                                         user:
-                                            { name: name, email: email, password: password }
+                                        {
+                                            name: name,
+                                            email: email,
+                                            password: password,
+                                            type: UserType.writer
+                                        }
                                     }
                                     ))
-                                // registerUser()
 
                             }
                         }
                         else {
                             handleSubmit(email, password)
-                            // loginUser()
 
                         }
                     }}>{toggle === Toggle.REGISTER ? "CADASTRE-SE" : "Fazer Login"}</Button>

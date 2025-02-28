@@ -3,7 +3,7 @@ import { IActionType, IAxiosResponse } from "../root.types"
 import { IActionText, IActionTextId, IActionUserId } from "./types"
 import TextService from "../../../service/text"
 import { Text } from "../../application/model/text"
-import { createTextFailure, createTextRequest, createTextSuccess, findTextFailure, findTextRequest, findTextSuccess, loadTextFailure, loadTextRequest, loadTextSuccess, removeTextFailure, removeTextRequest, removeTextSuccess, updateTextFailure, updateTextRequest, updateTextSuccess } from "."
+import { createTextFailure, createTextRequest, createTextSuccess, findTextFailure, findTextRequest, findTextSuccess, loadTextFailure, loadTextRequest, loadTextSuccess, removeTextFailure, removeTextRequest, removeTextSuccess, resetCreate, updateTextFailure, updateTextRequest, updateTextSuccess } from "."
 
 function* loadText(action: IActionType<IActionUserId>) {
     try {

@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import { Provider } from 'react-redux'
 import store from "./store/duck"
-
+import "./index"
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import 'draft-js/dist/Draft.css'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

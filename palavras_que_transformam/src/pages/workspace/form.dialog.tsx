@@ -67,6 +67,7 @@ const FormDialog = (props: IProps) => {
     getValues,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<TextSchema>({
     mode: "onChange",
@@ -80,7 +81,7 @@ const FormDialog = (props: IProps) => {
       reset(text)
     }
     else if (open === true) {
-      reset({ user_id: user?.id })
+      reset({ user_id: user?.id,number_words:0 })
     }
   }, [open, text]);
 
@@ -88,18 +89,18 @@ const FormDialog = (props: IProps) => {
     if (Object.keys(errors).length) {
       console.error("Erros no formulário:", errors);
     }
-  }, [Object.keys(errors).length]);
+  }, [Object.keys(errors)]);
 
   const createdAt = getValues("created_at") as string | undefined;
   const updatedAt = getValues("update_at") as string | undefined;
-
-  useEffect(()=>{
-    setValue("number_words", wordsCount as unknown as never )
-  },[setWordsCount])
+ 
+  useEffect(() => {
+    setValue("number_words", wordsCount as unknown as never)
+  }, [wordsCount])
 
   return (
     <Dialog open={open} onClose={handleClose} classes={{ paper: classes.paper }}>
-      <DialogTitle>{text?.id ? "Editar Texto" : "Criar Texto"}</DialogTitle>
+      <DialogTitle className={classes.text}>{text?.id ? "Editar Texto" : "Criar Texto"}</DialogTitle>
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <DialogContent sx={{ paddingBlock: 0 }}>
           <TextField
@@ -115,21 +116,21 @@ const FormDialog = (props: IProps) => {
             helperText={errors?.title?.message}
             error={!!errors?.title}
           />
-         <Controller
-        name="body"
-        control={control}
-        render={({ field }) => (
-          <>
-            <TextEditor
-              value={field.value } 
-              onChange={field.onChange} 
-              setWordsCount={setWordsCount}
-            />
-            {errors.body && <Typography color='error' variant='caption'>{errors.body.message}</Typography>}
+          <Controller
+            name="body"
+            control={control}
+            render={({ field }) => (
+              <>
+                <TextEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  setWordsCount={setWordsCount}
+                />
+                {errors.body && <Typography color='error' variant='caption'>{errors.body.message}</Typography>}
 
-          </>
-        )}
-      />
+              </>
+            )}
+          />
           {/* <TextField
             required
             spellCheck={false}
@@ -169,6 +170,17 @@ const FormDialog = (props: IProps) => {
           >
             Data da última modificação: {dateAndHour(updatedAt)}
           </Typography>
+          <Typography
+            variant='body1'
+            sx={{ fontSize: 10 }}
+            className={classes.text}
+          >
+            Meta cumprida: {
+                user?.goal ?
+                  (user?.goal <= wordsCount ? "Sim" : "Não")
+                  : "Indefinido"
+            }
+          </Typography>
         </DialogContent>
         <DialogActions sx={{ justifyContent: "space-between" }}>
 
@@ -186,7 +198,7 @@ const FormDialog = (props: IProps) => {
             type="submit"
             variant="text"
             size="small"
-            disabled={Object.keys(errors).length>0}
+            disabled={Object.keys(errors).length > 0}
           >
             {text?.id ? "SALVAR" : "CRIAR"}
           </Button>

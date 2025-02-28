@@ -15,11 +15,12 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: `${theme.palette.primary.contrastText}`,
         backgroundColor: `${theme.palette.background.paper}`,
 
-        [theme.breakpoints.down('md')]: {
-            //  backgroundColor: 'pink',
+        [theme.breakpoints.up('md')]: {
+            // backgroundColor: 'pink',
+
         },
         [theme.breakpoints.up('sm')]: {
-            //  backgroundColor: 'green',
+            // backgroundColor: 'green',
         },
 
     },
@@ -49,52 +50,52 @@ const TextCard = (props: IProps) => {
     const classes = useStyles()
 
     const matchesSm = useMediaQuery('(min-width:400px)')
-    return <>
-        <Card sx={matchesSm ? { height: 150, width: 220 } : undefined} className={classes.card}>
+    return <Card
+        sx={matchesSm ? { height: 150, width: 220 } : undefined}
+        onClick={() => {
+            text.id && findTextRequest({ textId: text.id })
+            props.handleClickOpen()
+        }}  /*className={classes.card}*/>
 
-            <CardActionArea
-                sx={matchesSm ? { height: 150 } : undefined}
-                onClick={() => {
-                    text.id && findTextRequest({ textId: text.id })
-                    props.handleClickOpen()
-                }}   >
+        <CardActionArea
+            sx={matchesSm ? { height: 150 } : undefined}
+        >
 
-                <CardContent>
-                    <Typography
-                        variant="h6"
-                        sx={{ fontSize: 14 }}
-                        className={classes.text}
-                        gutterBottom>
-                        Titulo
-                    </Typography>
+            <CardContent>
+                <Typography
+                    variant="h6"
+                    sx={{ fontSize: 14 }}
+                    className={classes.text}
+                    gutterBottom>
+                    Titulo
+                </Typography>
 
-                    <Typography
-                        variant="h5"
-                        component="div"
-                        className={classes.text}
-                        noWrap>
-                        {text?.title}
-                    </Typography>
+                <Typography
+                    variant="h5"
+                    component="div"
+                    className={classes.text}
+                    noWrap>
+                    {text?.title}
+                </Typography>
 
-                    <Typography
-                        variant="body1"
-                        sx={{ fontSize: 10, bottom: 0, right: 0 }}
-                        align="right"
-                        className={classes.text}
-                    >
-                        {wordCounter(text?.body)} palavras escritas
-                    </Typography>
-                    <Typography
-                        variant="body1"
-                        sx={{ fontSize: 10, bottom: 0, right: 0 }}
-                        align="right"
-                        className={classes.text}>
-                        {dateAndHour(text?.update_at)}
-                    </Typography>
+                <Typography
+                    variant="body1"
+                    sx={{ fontSize: 10, bottom: 0, right: 0 }}
+                    align="right"
+                    className={classes.text}
+                >
+                    {wordCounter(text?.body)} palavras escritas
+                </Typography>
+                <Typography
+                    variant="body1"
+                    sx={{ fontSize: 10, bottom: 0, right: 0 }}
+                    align="right"
+                    className={classes.text}>
+                    {dateAndHour(text?.update_at)}
+                </Typography>
 
-                </CardContent>
-            </CardActionArea>
-        </Card >
-    </>
+            </CardContent>
+        </CardActionArea>
+    </Card >
 }
 export default TextCard

@@ -23,6 +23,7 @@ import { makeStyles } from '@mui/styles'
 import { green } from '@mui/material/colors';
 import clsx from 'clsx';
 import { AuthContext } from '../auth/AuthContext';
+import { UserType } from '../../store/application/model/user';
 
 const useStyles = makeStyles((theme: Theme) => ({
   progress: {
@@ -163,6 +164,10 @@ const MenuAppBar = ({ children }: { children: JSX.Element }) => {
               <MenuItem onClick={() => navigate('/statistic')}>
                 <Typography className={classes.text}>Estatistica</Typography>
               </MenuItem>
+              {
+              auth.user?.type===UserType.admin &&<MenuItem onClick={() => navigate('/achievement')}>
+                <Typography className={classes.text}>Conquistas</Typography>
+              </MenuItem>}
               <MenuItem onClick={async () => {
                 await auth.signout()
                 navigate("/")

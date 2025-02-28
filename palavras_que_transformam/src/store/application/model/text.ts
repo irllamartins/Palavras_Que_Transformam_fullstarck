@@ -10,5 +10,5 @@ export interface Text  {
     created_at?: string,
     update_at?: string ,
     achieved_goal?: boolean,
-    number_words?: number 
+    number_words: number 
 }

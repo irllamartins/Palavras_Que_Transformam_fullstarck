@@ -1,0 +1,5 @@
+.toolbar-class .rdw-dropdown {
+    display: inline-block !important;
+    visibility: visible !important;
+    z-index: 9999 !important;
+}

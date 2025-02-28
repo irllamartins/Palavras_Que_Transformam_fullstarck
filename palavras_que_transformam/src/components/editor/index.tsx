@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ContentState, convertFromHTML, convertFromRaw, convertToRaw, EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import 'draft-js/dist/Draft.css'
-import { configToolbar } from './config.toolbar';
-import { useTheme } from '@mui/material';
+import { ConfigToolbar } from './config.toolbar';
+import { Box, useTheme } from '@mui/material';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import wordCounter from '../../store/application/utils/word.counter';
+import zIndex from '@mui/material/styles/zIndex';
+import { Theme } from '../theme/context';
 
 // Definindo a interface para os props
 interface EditorProps {
@@ -18,6 +18,9 @@ interface EditorProps {
 
 const TextEditor: React.FC<EditorProps> = ({ onChange, value, setWordsCount }) => {
     const theme = useTheme();
+    const colorFont = theme.palette.getContrastText(theme.palette.background.paper)
+    const backgroundColor = theme.palette.background.paper;
+
 
     const [editorState, setEditorState] = useState<EditorState>(EditorState.createEmpty());
 
@@ -62,39 +65,80 @@ const TextEditor: React.FC<EditorProps> = ({ onChange, value, setWordsCount }) =
             editorRef.current.scrollTop = editorRef.current.scrollHeight;
         }
     }, [editorState]);
-
     return (
         <div ref={editorRef}>
-            <Editor
-                editorState={editorState}
-                editorStyle={{
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                    minHeight: "200px",
-                    maxHeight: "300px",
-                    overflowY: "auto",
-                    "&:focus": {
-                        borderColor: theme.palette.primary.main,
+            <Box
+                sx={{
+                    ".rdw-editor-toolbar": {
+                        backgroundColor: theme.palette.secondary.main, // Cor do toolbar
+                        borderRadius: "8px",
+                        padding: "5px",
                     },
-                }}
-                onEditorStateChange={onEditorStateChange}
-                // toolbar={configToolbar()}
-                toolbar={{
-                    options: ['inline', 'fontSize', 'fontFamily', 'list'],
-                    inline: { options: ['bold', 'italic', 'underline', 'strikethrough'] },
-                    list: { options: ['unordered', 'ordered'] },
-                    fontSize: { 
-                        options: [8, 10, 12, 16, 24] 
+                    ".rdw-option-wrapper": {
+                        backgroundColor: theme.palette.background.paper, // Cor dos botões
+                        borderRadius: "4px",
+                        margin: "2px",
                     },
-                    fontFamily: { 
-                        options: ['Arial', 'Georgia', 'Times New Roman'] 
+                    ".rdw-option-active": {
+                        backgroundColor: theme.palette.background.default, // Cor quando ativo
+                        borderColor: theme.palette.background.default,
+                      
+                    },
+                    ".rdw-dropdown-wrapper": {
+                        display: "inline-block",
+                        visibility: "visible",
+                        zIndex: 9999
                     }
                 }}
-                localization={{
-                    locale: 'pt',
-                }}
-            />
-        </div>
+            >
+                <Editor
+                    placeholder="Digite seu texto aqui..."
+                    editorState={editorState}
+                    toolbarClassName="toolbar-class"
+                    wrapperClassName="wrapper-class"
+                    editorClassName="editor-class"
+                    editorStyle={{
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        minHeight: "200px",
+                        maxHeight: "300px",
+                        color: colorFont,
+                        overflowY: "auto",
+                        "&:focus": {
+                            borderColor: theme.palette.primary.main,
+                        },
+                        zIndex: 9999,
+                    }}
+                    onEditorStateChange={onEditorStateChange}
+                    toolbarStyle={{
+                        backgroundColor: backgroundColor,
+                        color: colorFont,
+                        borderRadius: "4px",
+                        border: "1px solid #ccc",
+                    }}
+                    toolbar={ConfigToolbar()}
+                     /* toolbar={{
+                        options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'history'],
+                        inline: { options: ['bold', 'italic', 'underline', 'strikethrough'] },
+                        blockType: {
+                            inDropdown: false,
+                            options: ['Normal', 'H1', 'H2', 'H3', 'Blockquote', 'Code'],
+                        },
+                        fontSize: {
+                            options: [8, 10, 12, 16, 24, 32, 48] // Teste com mais opções
+                        },
+                        fontFamily: {
+                            options: ['Arial', 'Georgia', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana'] // Adicione mais opções para testar
+                        },
+                        list: { options: ['unordered', 'ordered'] },
+                        textAlign: { options: ['left', 'center', 'right', 'justify'] },
+                        history: { options: ['undo', 'redo'] }
+                    }}*/
+                    localization={{
+                        locale: 'pt',
+                    }}
+                /></Box>
+        </div >
     );
 };
 

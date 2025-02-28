@@ -1,9 +1,9 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeProvider, Box, createTheme, CssBaseline } from '@mui/material';
 import { DarkTheme, LightTheme } from './themes';
 
-enum Theme{
-  LIGHT='light',
+export enum Theme {
+  LIGHT = 'light',
   DARK = 'dark'
 }
 interface IThemeContextData {
@@ -20,7 +20,15 @@ export const useAppThemeContext = () => useContext(ThemeContext)
 
 export const AppThemeProvider = ({ children }: React.PropsWithChildren<{}>) => {
   
-  const [themeName, setThemeName] = useState<Theme>(Theme.LIGHT);
+  // procurando thema armazenado
+  const localTheme = localStorage.getItem('theme')?.toUpperCase()
+
+  const variableTheme = localTheme && localTheme in Theme 
+  ? Theme[localTheme as keyof typeof Theme] 
+  : undefined;
+
+
+  const [themeName, setThemeName] = useState<Theme>(variableTheme || Theme.LIGHT);
 
   // armazena função e executa de acordo com o parametros
   // troca de tema
@@ -28,13 +36,17 @@ export const AppThemeProvider = ({ children }: React.PropsWithChildren<{}>) => {
     setThemeName(oldThemeName => oldThemeName === Theme.LIGHT ? Theme.DARK : Theme.LIGHT);
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem('theme', themeName)
+  }, [themeName]);
+
   // armazena valores (o tema atual) 
-  const theme = useMemo(() => themeName === Theme.LIGHT  ? LightTheme : DarkTheme, [themeName]);
+  const theme = useMemo(() => themeName === Theme.LIGHT ? LightTheme : DarkTheme, [themeName]);
 
 
   return <ThemeContext.Provider value={{ themeName, toggleTheme }}>
-    <ThemeProvider theme={createTheme(theme)}>   
-    <CssBaseline />
+    <ThemeProvider theme={createTheme(theme)}>
+      <CssBaseline />
       <Box width="100vw" height="100vh" style={{ margin: 0, padding: 0 }} bgcolor={theme.palette.background.default}>
         {children}
       </Box>

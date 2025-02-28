@@ -45,24 +45,47 @@ export const DarkTheme = {
       paper: '#303134',
       default: '#202124',
     },
-    
+    text: {
+      primary: '#fff', // Cor do texto primário
+      secondary: '#bbb', // Cor do texto secundário
+    }
   },
   components: {
-   /* MuiTypography: {
-      defaultProps: {
-        variantMapping: {
-          // Map the new variant to render a <h1> by default
-          poster: 'h1',
-        },
+    typography: {
+      fontFamily: ['Satisfy'].join(','),
+      poster: {
+        fontSize: '4rem',
+        color: 'red',
       },
-    },*/
+      h1: {
+        fontSize: '2.5rem',
+        fontWeight: 700,
+        color: '#fff',
+      },
+      h2: {
+        fontSize: '2rem',
+        fontWeight: 600,
+        color: '#ddd',
+      },
+      body1: {
+        fontSize: '1rem',
+        fontWeight: 400,
+        color: '#bbb',
+      },
+      button: {
+        fontSize: '1rem',
+        fontWeight: 500,
+        textTransform: 'none', // Remove uppercase transformation
+        color: '#ff87b6',
+      },
+    },
     MuiTextField: {
       styleOverrides: {
         root: {
           '--TextField-placeholderColor': '#ff87b6',
           '--TextField-brandBorderColor': '#ff87b6',
         },
-        
+
       },
     },
     MuiInput: {
@@ -75,6 +98,63 @@ export const DarkTheme = {
         },
       },
     },
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#3f51b5', // Cor de fundo para o cabeçalho da tabela
+          color: '#fff', // Cor do texto para o cabeçalho da tabela
+        },
+      },
+    },
+    // table body
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#333',
+          color: '#f5f5f5',
+        },
+        head: {
+          backgroundColor: colorMainSecondaryDark ,
+          color: '#fff',
+        },
+        body: {
+          backgroundColor:'#000', 
+          color: '#fff',
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          '&:nth-of-type(odd)': {
+            backgroundColor:'#202124',
+          },
+          '&:hover': {
+            backgroundColor:'#202124',
+          },
+        },
+      },
+    },
+    MuiTablePagination: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#202124',
+          color: '#fff',
+        },
+      },
+    },
+   /* MuiToolbar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#424242', // Cor de fundo para a Toolbar
+          color: '#fff', // Cor do texto para a Toolbar
+          minHeight: '56px', // Altura mínima da Toolbar
+          '@media (min-width: 600px)': {
+            minHeight: '64px', // Altura mínima da Toolbar para telas maiores
+          },
+        },
+      },
+    },*/
   },
   breakpoints: {
     values: {
@@ -84,17 +164,7 @@ export const DarkTheme = {
       lg: 1200,
       xl: 1536,
     }
-  },
- /* typography: {
-    fontFamily: [
-      'Satisfy',
-    ].join(','),
-  },
-  poster: {
-    fontSize: '4rem',
-    color: 'red',
-
-  }*/
+  }
 }
 
 const colorBasePrimaryLight = '#7F00FF'
@@ -107,11 +177,11 @@ const colorMainSecondaryLight = alpha(colorBaseSecondaryLight, 0.7)
 export const LightTheme = {
 
   palette: {
-    primary: {   
+    primary: {
       main: colorMainPrimaryLight,
-      dark: alpha(colorBasePrimaryLight, 0.9),    
+      dark: alpha(colorBasePrimaryLight, 0.9),
       light: alpha(colorBasePrimaryLight, 0.5),
-      contrastText: getContrastRatio(colorMainPrimaryLight, '#f7f6f3') < 4.5? '#fff' : '#111',
+      contrastText: getContrastRatio(colorMainPrimaryLight, '#f7f6f3') < 4.5 ? '#fff' : '#111',
     },
     secondary: {
       main: colorMainSecondaryLight,
@@ -123,9 +193,12 @@ export const LightTheme = {
       paper: '#ffffff',
       default: '#f7f6f3',
     },
-    accent:{
-      notComplete:"DarkGray"
-    }
+    accent: {
+      notComplete: "DarkGray"
+    },
+    text: {
+      //  primary: '#FF5722',
+    },
   },
   breakpoints: {
     values: {

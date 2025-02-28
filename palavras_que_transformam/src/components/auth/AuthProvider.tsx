@@ -6,6 +6,7 @@ import React from 'react';
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/duck";
 import { authenticationFailure, authenticationSuccess } from "../../store/duck/users";
+import { Theme } from "../theme/context";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null)
@@ -44,6 +45,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
     const setToken = (token: string) => {
         localStorage.setItem('authToken', token)
+
+        // memorizando theme
+        const hasTheme = localStorage.getItem('theme')
+        if (!hasTheme) {
+            localStorage.setItem('theme',Theme.LIGHT)
+        }
     }
     return (
         <AuthContext.Provider value={{ user, signin, signout }}>

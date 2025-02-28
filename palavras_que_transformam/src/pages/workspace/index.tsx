@@ -25,6 +25,7 @@ import FormDialog from "./form.dialog"
 import { AuthContext } from "../../components/auth/AuthContext"
 import TextSchema from "../../store/application/schema/text"
 import TextEditor from "../../components/editor"
+import { AsyncStateStatus } from "../../store/duck/root.types"
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -93,6 +94,7 @@ const Workspace = () => {
     const auth = useContext(AuthContext)
 
     const text = useSelector((state: RootState) => state.texts.create.text)
+    const textLoading = useSelector((state: RootState) => state.texts.create.status)
     const texts = useSelector((state: RootState) => state.texts.list.texts)
     const open = useSelector((state: RootState) => state.texts.dialog.open)
 
@@ -110,8 +112,8 @@ const Workspace = () => {
     }
 
     const handleClose = () => {
-        dispatch(handleDialog({ open: false }))
         dispatch(resetCreate())
+        dispatch(handleDialog({ open: false }))
     }
 
     const handleFormSubmit = (text: TextSchema) => {
@@ -121,7 +123,9 @@ const Workspace = () => {
         } else {
             dispatch(createTextRequest({ text }));
         }
-        handleClose();
+
+         handleClose();
+          
     };
 
     const handleDialogOpen = (type: string) => {
@@ -132,6 +136,7 @@ const Workspace = () => {
         if (textId && auth.user?.id) {
             dispatch(removeTextRequest({ textId }))
             dispatch(loadTextRequest({ userId: auth.user.id }))
+            handleClose();
         }
     }
     const matches = useMediaQuery('(min-width:400px)')
@@ -140,7 +145,7 @@ const Workspace = () => {
             <Grid container sx={{ position: "relative", justifyContent: "center" }}>
                 <Grid container className={classes.conteiner} direction={matches ? 'column' : 'row'} spacing={2}>
                     {texts.map((item: any, index: number) => {
-                        return <Grid key={index} size={{ xs: 12, sm: 6, md: 2 }}  >
+                        return <Grid key={index} size={{lg:2, md: 4, sm: 6,xs: 12}}  >
                             <TextCard
                                 text={item}
                                 handleClickOpen={() => handleClickOpen(item.id)}

@@ -57,7 +57,7 @@ const loginUser = async (req, res) => {
         // checar se o usuario existe
         const user = await User.findOne({ email: email })
         if (!user) {
-            return res.json({
+            return res.status(404).json({
                 error: "No user found"
             })
         }
@@ -86,7 +86,7 @@ const validateToken = async (req, res) => {
         })
         if (validaded) {
             // checar se o usuario existe
-            const user = await User.findOne({ _id: validaded })
+            const user = await User.findOne({ _id: validaded }).populate('achievements')
             if (!user) {
                 return res.json({
                     error: "No user found"
@@ -97,7 +97,9 @@ const validateToken = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 goal: user.goal,
-                point: user.point
+                point: user.point,
+                achievements: user.achievements,
+                type: user.type
             })
 
         }
@@ -112,7 +114,8 @@ const findUser = async (req, res) => {
     try {
         const { id } = req.params
         // checar se o usuario existe
-        const user = await User.findOne({ _id:id})
+        // const user = await User.findOne({ _id:id})
+        const user = await User.findById(req.params.userId).populate('achievements')
         if (!user) {
             return res.json({
                 error: "No user found"
@@ -129,5 +132,5 @@ module.exports = {
     registerUser,
     loginUser,
     validateToken,
-    findUser     
+    findUser
 }

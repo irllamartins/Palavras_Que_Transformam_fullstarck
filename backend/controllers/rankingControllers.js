@@ -25,7 +25,7 @@ const loadAnnualRanking = async (req, res) => {
                $project: { _id: 1 } 
              }*/ 
            ]);
-        console.log(oneYearAgo, "!", users)
+      //  console.log(oneYearAgo, "!", users)
         // console.log(users.map(user => user._id)); Retorna apenas os IDs
 
         return res.status(200).json(users);

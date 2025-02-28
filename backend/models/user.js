@@ -8,9 +8,10 @@ const userSchema = new Schema({
         unique:true
     },
     password:String,
+    type:String,
     goal:Number,
-    point:Number
-
+    point:Number,
+    achievements: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Achievement' }]
 })
 
 const UserModel = mongoose.model('User', userSchema)
